@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "bingoreloaded:item/show_team_card",
+    "particle": "bingoreloaded:item/show_team_card"
+  }
+}

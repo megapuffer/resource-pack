@@ -1,0 +1,37 @@
+name: Create Archive
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: pull latest and remove old file from repo
+      run: |
+        git config --global user.name "ST3V1K"
+        git config --global user.email "st3v1k@seznam.cz"
+        git config pull.rebase false
+        git pull
+        rm -f release.zip
+    - name: Archive Release
+      uses: thedoctor0/zip-release@master
+      with:
+        filename: 'release.zip'
+        exclusions: '*.git* /*node_modules/* .editorconfig'
+    - name: Generate checksum
+      uses: jmgilman/actions-generate-checksum@v1
+      with:
+        method: sha1
+        patterns: |
+          release.zip
+    - name: push changes to remote
+      run: |
+        git add -A
+        git switch --orphan "resourcepack"
+        git commit -m "latest"
+        git push --set-upstream origin --force-with-lease resourcepack
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
